@@ -800,7 +800,7 @@ curl_config() {
         --host="${TARGET}" \
         --prefix="${PREFIX}" \
         --enable-static --disable-shared \
-        --with-ca-bundle=${CA_CERT_PATH} \
+        
         --with-openssl "${with_openssl_quic}" --with-brotli --with-zstd \
         --with-nghttp2 --with-nghttp3 \
         --with-libidn2 --with-libssh2 \
@@ -821,8 +821,7 @@ curl_config() {
         --enable-curldebug --enable-dict --enable-netrc \
         --enable-bearer-auth --enable-tls-srp --enable-dnsshuffle \
         --enable-get-easy-options --enable-progress-meter \
-        --with-ca-bundle=/etc/ssl/certs/ca-certificates.crt \
-        --with-ca-path=/etc/ssl/certs \
+        --with-ca-bundle=${CA_CERT_PATH} \
         --with-ca-fallback --enable-ares --enable-httpsrr --enable-ipfs \
         --disable-ldap --disable-ldaps --enable-ssls-export \
         "${ENABLE_DEBUG}";
