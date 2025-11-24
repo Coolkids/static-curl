@@ -944,6 +944,7 @@ _build_in_docker() {
         -e TLS_LIB="${TLS_LIB}" \
         -e OPENSSL_VERSION="${OPENSSL_VERSION}" \
         -e OPENSSL_BRANCH="${OPENSSL_BRANCH}" \
+        -e CA_CERT_PATH="${CA_CERT_PATH}" \
         -e NGTCP2_VERSION="${NGTCP2_VERSION}" \
         -e NGHTTP3_VERSION="${NGHTTP3_VERSION}" \
         -e NGHTTP2_VERSION="${NGHTTP2_VERSION}" \
