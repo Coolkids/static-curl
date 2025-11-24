@@ -800,7 +800,6 @@ curl_config() {
         --host="${TARGET}" \
         --prefix="${PREFIX}" \
         --enable-static --disable-shared \
-        
         --with-openssl "${with_openssl_quic}" --with-brotli --with-zstd \
         --with-nghttp2 --with-nghttp3 \
         --with-libidn2 --with-libssh2 \
