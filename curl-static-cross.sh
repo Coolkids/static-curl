@@ -60,6 +60,7 @@ init_env() {
     echo "TLS Library: ${TLS_LIB}"
     echo "OpenSSL version: ${OPENSSL_VERSION}"
     echo "OpenSSL branch: ${OPENSSL_BRANCH}"
+    echo "ca-certificates file path: ${CA_CERT_PATH}"
     echo "ngtcp2 version: ${NGTCP2_VERSION}"
     echo "nghttp3 version: ${NGHTTP3_VERSION}"
     echo "nghttp2 version: ${NGHTTP2_VERSION}"
@@ -799,6 +800,7 @@ curl_config() {
         --host="${TARGET}" \
         --prefix="${PREFIX}" \
         --enable-static --disable-shared \
+        --with-ca-bundle=${CA_CERT_PATH} \
         --with-openssl "${with_openssl_quic}" --with-brotli --with-zstd \
         --with-nghttp2 --with-nghttp3 \
         --with-libidn2 --with-libssh2 \
