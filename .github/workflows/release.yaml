@@ -91,7 +91,7 @@ jobs:
           echo "LIBC=glibc" >> $GITHUB_ENV
           echo "QBT_MUSL_CROSS_MAKE_VERSION=${{ vars.QBT_MUSL_CROSS_MAKE_VERSION }}" >> $GITHUB_ENV
           echo "CONTAINER_IMAGE=debian:latest" >> $GITHUB_ENV
-          echo "TOKEN_READ=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+          echo "TOKEN_READ=${{ secrets.GITHUBAPI_TOKEN }}" >> $GITHUB_ENV
 
       - name: Cross Build Static cURL
         run: sh curl-static-cross.sh
@@ -155,7 +155,7 @@ jobs:
           echo "QBT_MUSL_CROSS_MAKE_VERSION=${{ vars.QBT_MUSL_CROSS_MAKE_VERSION }}" >> $GITHUB_ENV
           echo "STATIC_LIBRARY=1" >> $GITHUB_ENV
           echo "CONTAINER_IMAGE=debian:latest" >> $GITHUB_ENV
-          echo "TOKEN_READ=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+          echo "TOKEN_READ=${{ secrets.GITHUBAPI_TOKEN }}" >> $GITHUB_ENV
 
       - name: Cross Build Static cURL
         run: sh curl-static-cross.sh
@@ -215,7 +215,7 @@ jobs:
           echo "ENABLE_TRURL=${{ vars.ENABLE_TRURL }}" >> $GITHUB_ENV
           echo "TRURL_VERSION=${{ vars.TRURL_VERSION }}" >> $GITHUB_ENV
           echo "CONTAINER_IMAGE=mstorsjo/llvm-mingw:latest" >> $GITHUB_ENV
-          echo "TOKEN_READ=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+          echo "TOKEN_READ=${{ secrets.GITHUBAPI_TOKEN }}" >> $GITHUB_ENV
           
 
       - name: Cross Build Static cURL
@@ -277,7 +277,7 @@ jobs:
           echo "ZSTD_VERSION=${{ vars.ZSTD_VERSION }}" >> $GITHUB_ENV
           echo "LIBSSH2_VERSION=${{ vars.LIBSSH2_VERSION }}" >> $GITHUB_ENV
           echo "ARES_VERSION=${{ vars.ARES_VERSION }}" >> $GITHUB_ENV
-          echo "TOKEN_READ=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+          echo "TOKEN_READ=${{ secrets.GITHUBAPI_TOKEN }}" >> $GITHUB_ENV
 
       - name: Build Static cURL on macOS
         run: bash curl-static-mac.sh
@@ -393,7 +393,7 @@ jobs:
           tag_name: ${{ env.RELEASE_TAG }}
           name: Release ${{ env.RELEASE_TAG }}
           make_latest: ${{ env.RELEASE_TAG == env.VERSION }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUBAPI_TOKEN }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
