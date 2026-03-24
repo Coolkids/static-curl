@@ -311,7 +311,16 @@ compile_zlib() {
               -DCMAKE_INSTALL_PREFIX="${PREFIX}" .. ;
     PKG_CONFIG="pkg-config --static" \
         cmake --build . --config Release --target install;
-    ln -s -r "${PREFIX}/lib/libzlibstatic.a" "${PREFIX}/lib/libz.a";
+    # Ensure libz.a exists for -lz static linking.
+    if [ -f "${PREFIX}/lib/libz.a" ]; then
+        :
+    elif [ -f "${PREFIX}/lib/libzlibstatic.a" ]; then
+        cp -a "${PREFIX}/lib/libzlibstatic.a" "${PREFIX}/lib/libz.a";
+    elif [ -f "${PREFIX}/lib/libzs.a" ]; then
+        cp -a "${PREFIX}/lib/libzs.a" "${PREFIX}/lib/libz.a";
+    else
+        echo "ERROR: no usable zlib static archive found (libz.a/libzlibstatic.a/libzs.a)" >&2
+    fi
 
     _copy_license ../LICENSE zlib;
 }
@@ -390,7 +399,7 @@ compile_ares() {
 
 compile_tls() {
     echo "Compiling ${TLS_LIB}, Arch: ${ARCH}" | tee "${RELEASE_DIR}/running"
-    local url openssl_arch ec_nistp_64_gcc_128
+    local url openssl_arch ec_nistp_64_gcc_128 ssl3
     change_dir;
 
     if [ "${OPENSSL_VERSION}" = "dev" ] && [ -n "${OPENSSL_BRANCH}" ]; then
@@ -408,6 +417,14 @@ compile_tls() {
         url_from_github openssl/openssl "${OPENSSL_VERSION}"
         url="${URL}"
         download_and_extract "${url}"
+    fi
+
+    # ssl3 is deprecated in 4.x
+    major_ver="${OPENSSL_VERSION%%.*}"
+    if [ "${OPENSSL_VERSION}" = "dev" ] || { [ "${major_ver}" -ge 4 ] 2>/dev/null; }; then
+        ssl3=""
+    else
+        ssl3="enable-ssl3 enable-ssl3-method"
     fi
 
     case "${ARCH}" in
@@ -454,7 +471,7 @@ compile_tls() {
         enable-ktls \
         ${ec_nistp_64_gcc_128} \
         enable-tls1_3 \
-        enable-ssl3 enable-ssl3-method \
+        ${ssl3} \
         enable-des enable-rc4 \
         enable-weak-ssl-ciphers \
         --static -static;
@@ -505,11 +522,7 @@ compile_nghttp2() {
 }
 
 compile_ngtcp2() {
-    if [ "${TLS_LIB}" = "openssl" ]; then
-        return
-    fi
     echo "Compiling ngtcp2, Arch: ${ARCH}" | tee "${RELEASE_DIR}/running"
-
     local url
     change_dir;
 
@@ -564,9 +577,9 @@ compile_brotli() {
 
     _copy_license ../LICENSE brotli;
     cd "${PREFIX}/lib/"
-    if [ -f libbrotlidec-static.a ] && [ ! -f libbrotlidec.a ]; then ln -f libbrotlidec-static.a libbrotlidec.a; fi
-    if [ -f libbrotlienc-static.a ] && [ ! -f libbrotlienc.a ]; then ln -f libbrotlienc-static.a libbrotlienc.a; fi
-    if [ -f libbrotlicommon-static.a ] && [ ! -f libbrotlicommon.a ]; then ln -f libbrotlicommon-static.a libbrotlicommon.a; fi
+    if [ -f libbrotlidec-static.a ] && [ ! -f libbrotlidec.a ]; then cp -a libbrotlidec-static.a libbrotlidec.a; fi
+    if [ -f libbrotlienc-static.a ] && [ ! -f libbrotlienc.a ]; then cp -a libbrotlienc-static.a libbrotlienc.a; fi
+    if [ -f libbrotlicommon-static.a ] && [ ! -f libbrotlicommon.a ]; then cp -a libbrotlicommon-static.a libbrotlicommon.a; fi
 }
 
 compile_zstd() {
@@ -619,14 +632,7 @@ compile_trurl() {
 
 curl_config() {
     echo "Configuring curl, Arch: ${ARCH}" | tee "${RELEASE_DIR}/running"
-    local with_openssl_quic with_idn with_ech
-
-    # --with-openssl-quic and --with-ngtcp2 are mutually exclusive
-    if [ "${TLS_LIB}" = "openssl" ]; then
-        with_openssl_quic="--with-openssl-quic"
-    else
-        with_openssl_quic="--with-ngtcp2"
-    fi
+    local with_idn with_ech
 
     case "${ENABLE_ECH}" in
         true|yes|y|Y)
@@ -650,8 +656,8 @@ curl_config() {
         --host="${TARGET}" \
         --prefix="${PREFIX}" \
         --enable-static --disable-shared \
-        --with-openssl "${with_openssl_quic}" --with-brotli --with-zstd \
-        --with-nghttp2 --with-nghttp3 \
+        --with-openssl --with-brotli --with-zstd \
+        --with-nghttp2 --with-nghttp3 --with-ngtcp2 \
         "${with_idn}" --with-libssh2 \
         "${with_ech}" \
         --enable-hsts --enable-mime --enable-cookies \
@@ -665,8 +671,8 @@ curl_config() {
         --enable-ipv6 --enable-unix-sockets --enable-socketpair \
         --enable-headers-api --enable-versioned-symbols \
         --enable-threaded-resolver --enable-optimize \
-        --enable-warnings --enable-werror \
-        --enable-curldebug --enable-dict --enable-netrc \
+        --enable-warnings \
+        --enable-dict --enable-netrc \
         --enable-bearer-auth --enable-tls-srp --enable-dnsshuffle \
         --enable-get-easy-options --enable-progress-meter \
         --without-ca-bundle --without-ca-path \
