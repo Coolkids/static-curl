@@ -9,11 +9,6 @@ on:
         required: false
         default: ''
         type: string
-      ENABLE_ECH:
-        description: 'Enable ECH Support'
-        required: false
-        default: false
-        type: boolean
       TLS_LIB:
         description: 'TLS Library (only openssl is supported for now)'
         required: false
@@ -27,7 +22,7 @@ on:
       OPENSSL_BRANCH:
         description: 'OpenSSL Branch'
         required: false
-        default: 'feature/ech'
+        default: ''
         type: string
       ARCHES_LINUX_GLIBC:
         description: "Linux glibc Architecture List (set 'none' to skip)"
@@ -72,7 +67,6 @@ jobs:
           # Set all build variables with fallback logic
           echo "ARCHES=${{ inputs.ARCHES_LINUX_GLIBC != '' && inputs.ARCHES_LINUX_GLIBC || vars.ARCHES_LINUX_GLIBC }}" >> $GITHUB_ENV
           echo "CURL_VERSION=${{ inputs.CURL_VERSION != '' && inputs.CURL_VERSION || vars.CURL_VERSION }}" >> $GITHUB_ENV
-          echo "ENABLE_ECH=${{ inputs.ENABLE_ECH }}" >> $GITHUB_ENV
           echo "TLS_LIB=${{ inputs.TLS_LIB != '' && inputs.TLS_LIB || vars.TLS_LIB }}" >> $GITHUB_ENV
           echo "OPENSSL_VERSION=${{ inputs.OPENSSL_VERSION != '' && inputs.OPENSSL_VERSION || vars.OPENSSL_VERSION }}" >> $GITHUB_ENV
           echo "OPENSSL_BRANCH=${{ inputs.OPENSSL_BRANCH != '' && inputs.OPENSSL_BRANCH || vars.OPENSSL_BRANCH }}" >> $GITHUB_ENV
@@ -103,7 +97,7 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Upload artifact (version)
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: curl-version
           path: release/version.txt
@@ -112,7 +106,7 @@ jobs:
           overwrite: true
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: curl-binary-linux-${{ env.VERSION }}
           path: release
@@ -136,7 +130,6 @@ jobs:
           # Set all build variables with fallback logic
           echo "ARCHES=${{ inputs.ARCHES_LINUX_MUSL != '' && inputs.ARCHES_LINUX_MUSL || vars.ARCHES_LINUX_MUSL }}" >> $GITHUB_ENV
           echo "CURL_VERSION=${{ inputs.CURL_VERSION != '' && inputs.CURL_VERSION || vars.CURL_VERSION }}" >> $GITHUB_ENV
-          echo "ENABLE_ECH=${{ inputs.ENABLE_ECH }}" >> $GITHUB_ENV
           echo "TLS_LIB=${{ inputs.TLS_LIB != '' && inputs.TLS_LIB || vars.TLS_LIB }}" >> $GITHUB_ENV
           echo "OPENSSL_VERSION=${{ inputs.OPENSSL_VERSION != '' && inputs.OPENSSL_VERSION || vars.OPENSSL_VERSION }}" >> $GITHUB_ENV
           echo "OPENSSL_BRANCH=${{ inputs.OPENSSL_BRANCH != '' && inputs.OPENSSL_BRANCH || vars.OPENSSL_BRANCH }}" >> $GITHUB_ENV
@@ -168,7 +161,7 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Upload artifact (version)
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: curl-version
           path: release/version.txt
@@ -177,7 +170,7 @@ jobs:
           overwrite: true
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: curl-binary-linux-musl-${{ env.VERSION }}
           path: release
@@ -201,7 +194,6 @@ jobs:
           # Set all build variables with fallback logic
           echo "ARCHES=${{ inputs.ARCHES_WINDOWS != '' && inputs.ARCHES_WINDOWS || vars.ARCHES_WINDOWS }}" >> $GITHUB_ENV
           echo "CURL_VERSION=${{ inputs.CURL_VERSION != '' && inputs.CURL_VERSION || vars.CURL_VERSION }}" >> $GITHUB_ENV
-          echo "ENABLE_ECH=${{ inputs.ENABLE_ECH }}" >> $GITHUB_ENV
           echo "TLS_LIB=${{ inputs.TLS_LIB != '' && inputs.TLS_LIB || vars.TLS_LIB }}" >> $GITHUB_ENV
           echo "OPENSSL_VERSION=${{ inputs.OPENSSL_VERSION != '' && inputs.OPENSSL_VERSION || vars.OPENSSL_VERSION }}" >> $GITHUB_ENV
           echo "OPENSSL_BRANCH=${{ inputs.OPENSSL_BRANCH != '' && inputs.OPENSSL_BRANCH || vars.OPENSSL_BRANCH }}" >> $GITHUB_ENV
@@ -230,7 +222,7 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Upload artifact (version)
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: curl-version
           path: release/version.txt
@@ -239,7 +231,7 @@ jobs:
           overwrite: true
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: curl-binary-windows-${{ env.VERSION }}
           path: release
@@ -267,7 +259,6 @@ jobs:
           # Set all build variables with fallback logic
           echo "ARCHES=${{ inputs.ARCHES_MACOS != '' && inputs.ARCHES_MACOS || vars.ARCHES_MACOS }}" >> $GITHUB_ENV
           echo "CURL_VERSION=${{ inputs.CURL_VERSION != '' && inputs.CURL_VERSION || vars.CURL_VERSION }}" >> $GITHUB_ENV
-          echo "ENABLE_ECH=${{ inputs.ENABLE_ECH }}" >> $GITHUB_ENV
           echo "TLS_LIB=${{ inputs.TLS_LIB != '' && inputs.TLS_LIB || vars.TLS_LIB }}" >> $GITHUB_ENV
           echo "OPENSSL_VERSION=${{ inputs.OPENSSL_VERSION != '' && inputs.OPENSSL_VERSION || vars.OPENSSL_VERSION }}" >> $GITHUB_ENV
           echo "OPENSSL_BRANCH=${{ inputs.OPENSSL_BRANCH != '' && inputs.OPENSSL_BRANCH || vars.OPENSSL_BRANCH }}" >> $GITHUB_ENV
@@ -294,7 +285,7 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Upload artifact (version)
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: curl-version
           path: ${{ env.MACOS_RELEASE_DIR }}/version.txt
@@ -303,7 +294,7 @@ jobs:
           overwrite: true
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: curl-binary-macos-${{ env.VERSION }}
           path: ${{ env.MACOS_RELEASE_DIR }}/release
@@ -329,7 +320,7 @@ jobs:
           fetch-depth: 1
 
       - name: Download artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: curl-version
           path: curl-version
@@ -341,38 +332,34 @@ jobs:
 
       - name: Set RELEASE_TAG
         run: |
-          if [ "${{ inputs.ENABLE_ECH }}" = "true" ]; then
-            RELEASE_TAG="${{ env.VERSION }}-ech"
-          else
-            RELEASE_TAG="${{ env.VERSION }}"
-          fi
+          RELEASE_TAG="${{ env.VERSION }}"
           echo "RELEASE_TAG=$RELEASE_TAG" >> $GITHUB_ENV
           echo "Will release as: $RELEASE_TAG"
 
       - name: Download artifact (linux)
         if: needs.build-Linux.result == 'success'
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: curl-binary-linux-${{ env.VERSION }}
           path: release
 
       - name: Download artifact (linux-musl)
         if: needs.build-Linux-musl.result == 'success'
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: curl-binary-linux-musl-${{ env.VERSION }}
           path: release
 
       - name: Download artifact (macos)
         if: needs.build-macOS.result == 'success'
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: curl-binary-macos-${{ env.VERSION }}
           path: release
 
       - name: Download artifact (windows)
         if: needs.build-Windows.result == 'success'
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: curl-binary-windows-${{ env.VERSION }}
           path: release
@@ -400,7 +387,7 @@ jobs:
         run: ls -l release/*
 
       - name: Upload Release Asset
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         if: github.ref == 'refs/heads/main'
         with:
           files: |
@@ -413,7 +400,7 @@ jobs:
           token: ${{ secrets.GITHUBAPI_TOKEN }}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: curl-release-${{ env.RELEASE_TAG }}
           path: release
